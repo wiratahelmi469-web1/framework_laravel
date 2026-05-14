@@ -1,35 +1,61 @@
 @extends('layouts.index')
-
 @section('content')
+@php
+$ar_judul = ['NO','NIM','NAMA','GENDER','EMAIL', 'FOTO', 'ACTION'];
+$no = 1;
+@endphp
+<h3>Data Staff</h3>
+<a href="{{ route('staff.create') }}" class="btn btn-primary" title="Tambah Data">
+Tambah Data Staff
+</a>
+<br/><br/>
 
-<div class="container">
-  <div class="row">
+<table class="table table-striped">
+<thead>
+<tr>
+@foreach($ar_judul as $jdl)
+<th scope="col">{{ $jdl }}</th>
+@endforeach
+</tr>
+</thead>
+<tbody>
+@foreach ($ar_staff as $row)
+<tr>
+<th scope="row">{{ $no++ }}</th>
+<td>{{ $row->nip }}</td>
+<td>{{ $row->name }}</td>
+<td>{{ $row->gender }}</td>
+<td>{{ $row->email }}</td>
+<td>
+@if($row->foto)
+<img src="{{ asset('storage/' . $row->foto) }}" alt="Foto Staff" width="100">
+@else
+<p>No Photo</p>
+@endif
+</td>
+<td>
+<form onsubmit="return confirm('Apakah Anda Yakin ?');"
+action="{{ route('staff.destroy', $row) }}" method="POST">
+@csrf
+@method('DELETE')
+<a class="btn btn-info btn-sm" href="{{ route('staff.show', $row->id) }}" title="Detail
+Staff">
 
-    @foreach ($ar_staff as $row)
+<i class="bi bi-eye"></i>
+</a>
+<a class="btn btn-warning btn-sm" href="{{ route('staff.edit', $row->id) }}"
 
-    <div class="col-md-3 mb-4">
-      <div class="card h-100" style="width: 15rem;">
+title="Ubah Staff">
 
-        <img src="{{ asset('images/profile.jpg') }}"
-             class="card-img-top"
-             alt="profile">
-
-        <div class="card-body">
-          <h5 class="card-title">{{ $row->nama }}</h5>
-          <p class="card-text">{{ $row->nip }}</p>
-          <p class="card-text">{{ $row->gender }}</p>
-
-          <a href="#" class="btn btn-primary">
-            Detail
-          </a>
-        </div>
-
-      </div>
-    </div>
-
-    @endforeach
-
-  </div>
-</div>
-
+<i class="bi bi-pencil-fill"></i>
+</a>
+<button type="submit" class="btn btn-danger btn-sm" title="Hapus Staff">
+<i class="bi bi-trash"></i>
+</button>
+</form>
+</td>
+</tr>
+@endforeach
+</tbody>
+</table>
 @endsection
